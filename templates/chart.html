@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<br>
+<div class="container-fluid">
+    <h5 style="padding-left: 30%; color: royalblue;">{{title[1:-1]}}</h5>
+
+    <div class="row">
+        <div class="col-lg-5">
+            <div id="graph"></div>
+        </div>
+        <div class="col-lg-5">
+            <div id="line"></div>
+        </div>
+        <div class="col-lg-2" style="padding-top:10%;">
+            <p id="iter" style="color: rgb(22, 0, 135);"></p>
+            <p>current X:</p>
+            <p class="x" id="x"></p>
+            <p>currentt Y:</p>
+            <p class="y" id="y"></p>
+            <p style="color: red;">current Loss :</p>
+            <p style="color: red;" class="z" class="z" id="z"></p>
+            
+
+            <input onclick="pauseAnimation()" type="button" value="Adjust View" class="btn btn-dark" id="pause_play">
+        </div>
+        <div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var line_data = {{ line | safe}};
+    var surface_data = {{ surface | safe}};
+
+    surface_data['showscale'] = false
+    console.log(surface_data)
+</script>
+<script src="/static/js/surface.js"></script>
+<script src="/static/js/line.js"></script>
+
+{% endblock %}

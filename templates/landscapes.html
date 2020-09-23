@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="/static/css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+    <script>
+      
+
+      //paste this code under the head tag or in a separate js file.
+	// Wait for window load
+	$(window).load(function() {
+		// Animate loader off screen
+		$(".se-pre-con").fadeOut("slow");;
+	});
+    </script>
+</head>
+<style>
+    .card{
+    padding: 10px;
+    align-items: center;
+}
+body {
+    background: #1a2a6c;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #fdbb2d, #b21f1f, #1a2a6c);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #fdbb2d, #b21f1f, #1a2a6c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url(https://smallenvelop.com/wp-content/uploads/2014/08/Preloader_11.gif) center no-repeat #fff;
+}
+
+
+
+</style>
+<body>
+  <div class="se-pre-con"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-light "  style="background-color: #001347;">
+    <a style="color: white;" class="navbar-brand" href="/">GRAD VIZ</a>
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        </li>
+        <li class="nav-item">
+        </li>
+        <li class="nav-item">
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <a  style="color:#ffff;" class="nav-link" href="/landscapes">Landscapes</a>
+      </span>
+    </div>
+  </nav>
+      <br><br>
+    <div class="container-fluid">
+        {% for i in range(0,14,2) %}
+        <div class="row">
+            <div class="col-md-6" >
+                <div class="card">
+                    <div id="{{landscape_fns[i]}}"></div>
+                    <a type="button" class="btn btn-outline-secondary" href="/landscape/{{landscape_fns[i]}}">Choose</a>
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div id="{{landscape_fns[i+1]}}"></div>
+                    <a type="button" class="btn btn-outline-secondary" href="/landscape/{{landscape_fns[i+1]}}">Choose</a>
+
+                </div>
+                
+            </div>
+           
+        </div>
+        <br><br>
+        {% endfor %}
+      
+    </div>
+    <div class="col-md-4" id="test">
+                
+    </div>
+</body>
+
+<script>
+    var landscapes_data = {{ landscapes | safe}};
+    var config={displayModeBar: false }
+    var layout={showlegend: false}
+    for(lsIndex=0;lsIndex<landscapes_data.length;lsIndex++){
+        landscape_=landscapes_data[lsIndex]
+        ls_name=landscape_[0]
+        ls_data=landscape_[1]['data']
+        ls_layout=landscape_[1]['layout']
+        ls_layout['title']={text:ls_name.toUpperCase().replace(/_/g, " "),x:0.5,xref:'paper'}
+        
+        console.log(ls_layout)
+        Plotly.plot(ls_name, ls_data,ls_layout,config)
+
+    }
+
+</script>
+
+</html>

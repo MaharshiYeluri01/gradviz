@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+ .options{
+     padding-top: 1%;
+ }
+ .card{
+     padding: 20px;
+     
+ }
+
+ #myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#myBar {
+  width: 1%;
+  height: 30px;
+  background-color: #0c0658;
+}
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #001347;
+  border-right: 16px solid #ffff;
+  border-bottom: 16px  #001347;
+  border-left: 16px solid #ffff;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+    
+    <br><br>
+    <div class="container-fluid">
+     <div class="row">
+         <div class="col-md-6">
+            <div id="tarDiv">
+
+            </div>
+         </div>
+         <div class="col-md-6 options">
+            <div class="card">
+                <h4 style="text-align: center;">Configure Search </h4>
+              
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Optimizer</label>
+                    <select class="form-control" id="optim">
+                      {% for my_item in optimizers %} 
+                      <option>{{my_item}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <h6 style="text-align: center;">Initial state </h6>
+                 <div class="row">
+                
+                     <div class="col-md-6">
+                        <div class="form-group">
+                          X-coordinate*
+                            <input type="text" class="form-control" value="2" id="x" placeholder="X-coordinate">
+                          </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="form-group">
+                          Y-coordinate*
+                            <input type="text" class="form-control" value="2" id="y" placeholder="Y-coordinate">
+                          </div>
+                     </div>
+                 </div>
+                 <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="to_search" onclick="yesnoCheck()" checked>
+                  <label class="form-check-label" for="defaultCheck1">
+                    Search LR
+                  </label>
+                </div>
+
+                 <div  id="searchlr">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                          minLR<input type="email" class="form-control" id="minLR" placeholder="min LR" value="0.01">
+                        </div>
+                   </div>
+                   <div class="col-md-4">
+                      <div class="form-group">
+                         maxLR<input type="email" class="form-control" id="maxLR" placeholder="max LR" value="10">
+                        </div>
+                   </div>
+                   <div class="col-md-4">
+                    <div class="form-group">
+                       max evals<input type="number" class="form-control" id="evals" placeholder="max evals" value="50">
+                      </div>
+                 </div>
+                  </div>
+                  
+                 
+                </div>
+                <div id="lr">
+                  <div class="form-group">
+                    LR<input type="text" class="form-control" id="lr_val" placeholder="LR" value="0.1">
+                  </div>
+                </div>
+               
+                 <div class="form-group">
+                    <label for="exampleFormControlInput1">iterations</label>
+                    <input type="number" class="form-control" id="iter" placeholder="500" value="500">
+                  </div>
+                 <div class="b" style="padding-left: 30%;">
+                    <a type="button" id="url" class="btn btn-outline-secondary" onclick="compose_url()" >optimize landscape</a>
+
+                 </div>
+                  <br>
+                  <div id="spinner" style="text-align: center;">
+                  <div style="padding-left: 40%;">
+                     
+                     
+                      <div  class="loader"></div>
+
+                  </div>
+                  <p style="color: blue;"> <span style="color: red;">[Optimizing landscape]</span> This might take a couple of minutes...</p>
+
+                </div>
+
+                
+              </div> 
+         
+         
+            </div>
+     </div>
+     
+    </div>
+
+  <!-- #href="/landscape/optimize/{{name}}" -->
+<script>
+  var landscape={{ls_name | safe}}
+  var searchlr=document.getElementById("searchlr")
+  var lr=document.getElementById("lr")
+
+  var optim=document.getElementById("optim")
+  var x=document.getElementById("x")
+  var y=document.getElementById("y")
+  var evals=document.getElementById("evals")
+  var to_search=document.getElementById("to_search")
+  var minLR=document.getElementById("minLR")
+  var maxLR=document.getElementById("maxLR")
+  var lr_val=document.getElementById("lr_val")
+  var iter=document.getElementById("iter")
+  var spinner=document.getElementById("spinner")
+  spinner.style.display='none'  
+
+  function yesnoCheck() {
+    if (to_search.checked) {
+      searchlr.style.display='block' 
+      lr.style.display='none'       
+    }
+    else  {
+      searchlr.style.display='none'
+      lr.style.display='block' }
+}
+function compose_url(){
+  if (to_search.checked) { 
+    var query_params="optim="+optim.value+"&x="+x.value+"&y="+y.value+"&evals="+evals.value+"&minLR="+minLR.value+"&maxLR="+maxLR.value+"&iter="+iter.value
+    spinner.style.display='block'  
+
+  }
+  else{
+    var query_params="optim="+optim.value+"&x="+x.value+"&y="+y.value+"&lr="+lr_val.value+"&iter="+iter.value
+  }
+  document.getElementById("url").href = "/landscape/optimize/"+landscape+"?"+query_params
+}
+yesnoCheck()
+    var landscape_data = {{ landscape | safe}};
+    data=landscape_data[1]['data']
+    layout=landscape_data[1]['layout']
+    layout['height']=600
+    layout['width']=600
+    Plotly.plot('tarDiv', data,layout,{displayModeBar: false })
+
+  
+</script>
+
+{% endblock %}
